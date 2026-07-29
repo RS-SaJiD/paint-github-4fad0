@@ -1,0 +1,29 @@
+name: Google Indexing API Trigger
+
+on:
+  push:
+    branches:
+      - main # তোমার প্রধান ব্রাঞ্চের নাম 'master' হলে এখানে 'master' দেবে
+    paths:
+      - 'sitemap.txt' # শুধু urls.txt চেঞ্জ বা আপডেট হলেই Action রান হবে
+
+jobs:
+  index-urls:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Dependencies
+        run: npm install googleapis
+
+      - name: Run Indexing Script
+        env:
+          GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
+        run: node scripts/index-urls.js
