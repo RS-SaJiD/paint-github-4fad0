@@ -1,23 +1,18 @@
 const { google } = require('googleapis');
-const fs = require('fs');
-const path = require('path');
 
-async function run() {
-  try {
-    const serviceAccountJson = process.env.GCP_SA_KEY;
-    if (!serviceAccountJson) {
-      throw new Error("GCP_SA_KEY environment variable is missing!");
-    }
+const serviceAccountKey = process.env.GCP_SA_KEY;
 
-    const credentials = JSON.parse(serviceAccountJson);
+if (!serviceAccountKey) {
+  throw new Error("GCP_SA_KEY secret is missing in GitHub Actions!");
+}
 
-    const jwtClient = new google.auth.JWT(
-      credentials.client_email,
-      null,
-      credentials.private_key,
-      ['https://www.googleapis.com/auth/indexing'],
-      null
-    );
+const credentials = JSON.parse(serviceAccountKey);
+
+const auth = new google.auth.GoogleAuth({
+  credentials,
+  scopes: ['https://www.googleapis.com/auth/indexing'],
+});
+
 
     await jwtClient.authorize();
     console.log('🔒 Authentication successful with Google Indexing API!');
