@@ -3,9 +3,9 @@ name: Google Indexing API Trigger
 on:
   push:
     branches:
-      - main # তোমার প্রধান ব্রাঞ্চের নাম 'master' হলে এখানে 'master' দেবে
+      - main
     paths:
-      - 'sitemap.txt' # শুধু urls.txt চেঞ্জ বা আপডেট হলেই Action রান হবে
+      - 'sitemap.txt'
 
 jobs:
   index-urls:
