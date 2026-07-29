@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 
 async function run() {
-  try 
+  try {
     const serviceAccountJson = process.env.GCP_SA_KEY;
     if (!serviceAccountJson) {
       throw new Error("GCP_SA_KEY environment variable is missing!");
@@ -11,7 +11,6 @@ async function run() {
 
     const credentials = JSON.parse(serviceAccountJson);
 
-    // Google API Auth
     const jwtClient = new google.auth.JWT(
       credentials.client_email,
       null,
@@ -35,7 +34,7 @@ async function run() {
       .filter(u => u.length > 0 && u.startsWith('http'));
 
     if (urls.length === 0) {
-      console.log('⚠️ No valid URLs found in urls.txt.');
+      console.log('⚠️ No valid URLs found in sitemap.txt.');
       return;
     }
 
@@ -62,4 +61,4 @@ async function run() {
   }
 }
 
-run();
+run()
