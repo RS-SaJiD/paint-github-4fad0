@@ -22,7 +22,7 @@ async function run() {
     await jwtClient.authorize();
     console.log('🔒 Authentication successful with Google Indexing API!');
 
-    const urlsFile = path.join(__dirname, '../sitemap.txt');
+    const urlsFile = path.join(__dirname, './sitemap.txt');
     if (!fs.existsSync(urlsFile)) {
       console.log('⚠️ sitemap.txt file not found. Skipping indexing.');
       return;
