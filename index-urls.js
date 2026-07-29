@@ -1,3 +1,5 @@
+const fs = require('fs');
+const path = require('path');
 const { google } = require('googleapis');
 
 const serviceAccountKey = process.env.GCP_SA_KEY;
@@ -13,8 +15,9 @@ const auth = new google.auth.GoogleAuth({
   scopes: ['https://www.googleapis.com/auth/indexing'],
 });
 
-
-    await jwtClient.authorize();
+async function run() {
+  try {
+    const authClient = await auth.getClient();
     console.log('🔒 Authentication successful with Google Indexing API!');
 
     const urlsFile = path.join(__dirname, './sitemap.txt');
@@ -35,7 +38,7 @@ const auth = new google.auth.GoogleAuth({
 
     console.log(`🚀 Sending ${urls.length} URL(s) to Google Indexing API...\n`);
 
-    const indexing = google.indexing({ version: 'v3', auth: jwtClient });
+    const indexing = google.indexing({ version: 'v3', auth: authClient });
 
     for (const url of urls) {
       try {
@@ -56,4 +59,4 @@ const auth = new google.auth.GoogleAuth({
   }
 }
 
-run()
+run();
