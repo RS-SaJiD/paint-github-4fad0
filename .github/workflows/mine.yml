@@ -1,0 +1,48 @@
+name: Mine Vanity Onion Address
+
+on:
+  workflow_dispatch:
+    inputs:
+      prefix:
+        description: 'Desired onion prefix (e.g., disney)'
+        required: true
+        default: 'disney'
+
+jobs:
+  mine:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Install Dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y gcc libc6-dev libsodium-dev make autoconf
+
+    - name: Build mkp224o
+      run: |
+        git clone https://github.com/cathugger/mkp224o.git
+        cd mkp224o
+        ./autogen.sh
+        ./configure
+        make
+
+    - name: Run Mining
+      run: |
+        cd mkp224o
+        # Runs mining for 1 match and stops
+        ./mkp224o -d ../keys -n 1 ${{ github.event.inputs.prefix }}
+
+    - name: Output Onion Address and Keys
+      run: |
+        echo "=== MINING COMPLETED ==="
+        for dir in keys/*; do
+          if [ -d "$dir" ]; then
+            echo "Onion Address: $(basename $dir).onion"
+            echo "--- hs_ed25519_secret_key (Base64) ---"
+            base64 -w 0 "$dir/hs_ed25519_secret_key"
+            echo ""
+          fi
+        done
